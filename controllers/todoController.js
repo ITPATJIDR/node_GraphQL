@@ -1,25 +1,19 @@
-const { prisma } = require("../utils/prisma")
+const { createTodo, getTodosByUserId } = require('../controllers/todoController');
+const { authMiddleware } = require('../middelware/authMiddleware');
 
-const registerUser = async (username, password) => {
-  return prisma.user.create({
-    data: {
-      username,
-      password,
+const todoResolver = {
+  Mutation: {
+    createTodo: async (_, { text }, context) => {
+      const userId = authMiddleware(context);
+      return createTodo(userId, text);
     },
-  });
-};
-
-const loginUser = async (username, password) => {
-  return prisma.user.findUnique({
-    where: {
-      username,
-      password,
+  },
+  Query: {
+    todos: async (_, __, context) => {
+      const userId = authMiddleware(context);
+      return getTodosByUserId(userId);
     },
-  });
+  },
 };
 
-module.exports = {
-  registerUser,
-  loginUser,
-};
-
+module.exports = todoResolver;
