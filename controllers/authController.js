@@ -1,13 +1,13 @@
-const { prisma } = require("../utils/prisma")
+const prisma = require("../utils/prisma")
 
 const authController = {
-  register: async () => {
-    return prisma.user.create({
-      data: {
+  registerUser: async (username, password) => {
+    return await prisma.user.create({
+      data : {
         username,
-        password,
-      },
-    });
+        password
+      }
+    })
   },
   loginUser: async (username, password) => {
     return prisma.user.findUnique({
